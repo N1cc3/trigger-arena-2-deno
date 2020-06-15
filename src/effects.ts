@@ -2,13 +2,13 @@ import { Player } from './game.ts'
 
 export type EffectId = 'damage'
 
-export type EffectBase = Readonly<{
+export type EffectType = Readonly<{
   id: EffectId
   text: (power: number) => string
   applyEffect: (targets: Player[], power: number) => void
 }>
 
-export const EFFECTS: readonly EffectBase[] = [
+export const EFFECTS: readonly EffectType[] = [
   {
     id: 'damage',
     text: (power) => `Damage ${power}`,
