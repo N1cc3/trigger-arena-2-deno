@@ -9,7 +9,17 @@ const config: Configuration = {
     path: path.resolve(__dirname, 'build'),
   },
   module: {
-    rules: [{ test: /\.ts$/, loader: 'babel-loader', exclude: /node_modules/ }],
+    rules: [
+      {
+        test: /\.ts$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+        options: {
+          presets: ['@babel/preset-env'],
+        },
+      },
+      { test: /\.png$/, loader: 'file-loader' },
+    ],
   },
   plugins: [new CleanWebpackPlugin(), new HtmlWebpackPlugin()],
 }
