@@ -1,6 +1,8 @@
 import Phaser, { GameObjects } from 'phaser'
+import { createWebSocket } from './api'
 import cardImg from './card.png'
 
+createWebSocket()
 class GameScene extends Phaser.Scene {
   handArray: GameObjects.GameObject[] = []
 
