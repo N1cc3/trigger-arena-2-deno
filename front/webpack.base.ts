@@ -8,6 +8,9 @@ const config: Configuration = {
   output: {
     path: path.resolve(__dirname, 'build'),
   },
+  resolve: {
+    extensions: ['.js', '.ts'],
+  },
   module: {
     rules: [
       {
