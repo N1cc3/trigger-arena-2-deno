@@ -5,8 +5,8 @@ type PointerEvent = (pointer: Input.Pointer, gameObject: GameObjects.GameObject)
 
 export const createCard = () => {
   const card = GAME_SCENE.add.sprite(window.innerWidth / 2, window.innerHeight + 200, 'card')
-  GAME_SCENE.handArray.push(card)
-  GAME_SCENE.handArray.forEach((c, idx) => {
+  GAME_SCENE.hand.add(card)
+  GAME_SCENE.hand.getChildren().forEach((c, idx) => {
     GAME_SCENE.tweens.add({ targets: c, x: handPosX(idx), y: window.innerHeight - 400, duration: 200 })
   })
 
@@ -23,7 +23,7 @@ export const createCard = () => {
   card.on('dragend', (() => {
     GAME_SCENE.tweens.add({
       targets: card,
-      x: handPosX(GAME_SCENE.handArray.indexOf(card)),
+      x: handPosX(GAME_SCENE.hand.getChildren().indexOf(card)),
       y: window.innerHeight - 400,
       scale: 1,
       depth: 0,
@@ -34,4 +34,4 @@ export const createCard = () => {
   return card
 }
 
-const handPosX = (idx: number) => (idx + 1) * (window.innerWidth / (GAME_SCENE.handArray.length + 1))
+const handPosX = (idx: number) => (idx + 1) * (window.innerWidth / (GAME_SCENE.hand.getLength() + 1))

@@ -1,9 +1,9 @@
-import Phaser, { GameObjects } from 'phaser'
+import Phaser from 'phaser'
 import { createCard } from './Card'
 import cardImg from './card.png'
 
 class GameScene extends Phaser.Scene {
-  handArray: GameObjects.GameObject[] = []
+  hand = new Phaser.GameObjects.Group(this)
 
   public preload() {
     this.load.image('card', cardImg)
