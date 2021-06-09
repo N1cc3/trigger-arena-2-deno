@@ -5,6 +5,8 @@ type PointerEvent = (pointer: Input.Pointer, gameObject: GameObjects.GameObject)
 
 export const createCard = () => {
   const container = GAME_SCENE.add.container(window.innerWidth / 2, window.innerHeight + 200)
+  const cardBack = GAME_SCENE.add.sprite(0, 0, 'cardBack')
+  container.add(cardBack)
   const card = GAME_SCENE.add.sprite(0, 0, 'card')
   container.add(card)
   GAME_SCENE.hand.add(container)
@@ -15,7 +17,6 @@ export const createCard = () => {
   container.setSize(card.width, card.height)
   container.setInteractive()
   GAME_SCENE.input.setDraggable(container)
-  // container.setInteractive({ draggable: true })
 
   container.on('drag', ((pointer) => {
     GAME_SCENE.tweens.add({ targets: container, x: pointer.x, y: pointer.y, duration: 50 })
