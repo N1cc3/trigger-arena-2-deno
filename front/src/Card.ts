@@ -43,13 +43,23 @@ export const createCard = () => {
     strokeThickness: 3,
   }
 
-  const trigger = GAME_SCENE.add.sprite(0, -135, 'trigger')
-  const text = GAME_SCENE.add.text(0, -150, `Takes damage`, style).setOrigin(0.5, 0)
+  const triggerBg = GAME_SCENE.add.sprite(0, -100, 'trigger')
+  const triggerText = GAME_SCENE.add.text(0, -115, `Takes damage`, style).setOrigin(0.5, 0)
+
+  const effectBg = GAME_SCENE.add.sprite(0, 0, 'trigger')
+  const effectText = GAME_SCENE.add.text(0, -15, `Takes damage`, style).setOrigin(0.5, 0)
+
+  const targetBg = GAME_SCENE.add.sprite(0, 100, 'trigger')
+  const targetText = GAME_SCENE.add.text(0, 85, `Takes damage`, style).setOrigin(0.5, 0)
 
   container.add(cardBack)
-  container.add(trigger)
+  container.add(triggerBg)
+  container.add(effectBg)
+  container.add(targetBg)
   container.add(card)
-  container.add(text)
+  container.add(triggerText)
+  container.add(effectText)
+  container.add(targetText)
 
   return container
 }

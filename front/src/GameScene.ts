@@ -24,8 +24,7 @@ class GameScene extends Phaser.Scene {
     music.play()
 
     const background = this.add.image(0, 0, 'background').setOrigin(0, 0)
-    const backgroundScale = Math.max(window.innerWidth / background.width, window.innerHeight / background.height)
-    background.setScale(backgroundScale)
+    background.setScale(Math.max(window.innerWidth / background.width, window.innerHeight / background.height))
 
     setTimeout(() => createCard(), 0)
     setTimeout(() => createCard(), 500)
