@@ -6,9 +6,8 @@ type PointerEvent = (pointer: Input.Pointer, gameObject: GameObjects.GameObject)
 export const createCard = () => {
   const container = GAME_SCENE.add.container(window.innerWidth / 2, window.innerHeight + 200)
   const cardBack = GAME_SCENE.add.sprite(0, 0, 'cardBack')
-  container.add(cardBack)
   const card = GAME_SCENE.add.sprite(0, 0, 'card')
-  container.add(card)
+
   GAME_SCENE.hand.add(container)
   GAME_SCENE.hand.getChildren().forEach((c, idx) => {
     GAME_SCENE.tweens.add({ targets: c, x: handPosX(idx), y: window.innerHeight - 400, duration: 200 })
@@ -38,11 +37,18 @@ export const createCard = () => {
   }) as PointerEvent)
 
   const style = {
-    font: '32px Arial',
-    color: 'black',
+    font: '24px Odibee Sans',
+    color: 'white',
+    stroke: '#000',
+    strokeThickness: 3,
   }
 
-  const text = GAME_SCENE.add.text(-card.width / 2 + 10, -150, `Takes damage`, style)
+  const trigger = GAME_SCENE.add.sprite(0, -135, 'trigger')
+  const text = GAME_SCENE.add.text(0, -150, `Takes damage`, style).setOrigin(0.5, 0)
+
+  container.add(cardBack)
+  container.add(trigger)
+  container.add(card)
   container.add(text)
 
   return container

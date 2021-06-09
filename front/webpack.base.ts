@@ -21,9 +21,14 @@ const config: Configuration = {
           presets: ['@babel/preset-env'],
         },
       },
-      { test: /\.(png|jpg|ogg)$/, loader: 'file-loader' },
+      { test: /\.(png|ogg)$/, loader: 'file-loader' },
     ],
   },
-  plugins: [new CleanWebpackPlugin(), new HtmlWebpackPlugin()],
+  plugins: [
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+    }),
+  ],
 }
 export default config
