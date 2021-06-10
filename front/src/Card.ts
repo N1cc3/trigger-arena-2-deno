@@ -46,11 +46,12 @@ export const createCard = () => {
   const triggerBg = GAME_SCENE.add.sprite(0, -100, 'trigger')
   const triggerText = GAME_SCENE.add.text(0, -115, `Takes damage`, style).setOrigin(0.5, 0)
 
+  const damage = 5
   const effectBg = GAME_SCENE.add.sprite(0, 0, 'trigger')
-  const effectText = GAME_SCENE.add.text(0, -15, `Takes damage`, style).setOrigin(0.5, 0)
+  const effectText = GAME_SCENE.add.text(0, -15, `Deals ${damage} damage`, style).setOrigin(0.5, 0)
 
   const targetBg = GAME_SCENE.add.sprite(0, 100, 'trigger')
-  const targetText = GAME_SCENE.add.text(0, 85, `Takes damage`, style).setOrigin(0.5, 0)
+  const targetText = GAME_SCENE.add.text(0, 85, `Everyone`, style).setOrigin(0.5, 0)
 
   container.add(cardBack)
   container.add(triggerBg)

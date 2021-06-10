@@ -1,86 +1,96 @@
-import { EffectId, EffectType } from "./effects.ts";
-import { TargetType } from "./targets.ts";
-import { TriggerType } from "./triggers.ts";
+import { EffectId, EFFECTS } from './effects.ts'
+import { TargetId, TARGETS } from './targets.ts'
+import { TriggerId, TRIGGERS } from './triggers.ts'
 
 export type Game = {
-  id: string;
-  players: Player[];
-  cards: OwnedTriggerCard[];
-  hands: { [playerIdx: number]: Card[] };
-  turn: number;
-  events: Event[];
-};
+  id: string
+  state: GameState
+  events: Event[]
+}
+
+export type GameState = {
+  players: Player[]
+  cards: OwnedTriggerCard[]
+  hands: { [playerIdx: number]: Card[] }
+  turn: number
+}
 
 export type Player = {
-  name: string;
-  health: number;
-  dead?: boolean;
-};
+  name: string
+  health: number
+  dead?: boolean
+}
 
 export type Event = {
-  effectId: EffectId;
-  targetIdxs: number[];
-};
+  effect: Effect
+  targetIdxs: number[]
+}
 
 export type TriggerCard = {
-  type: "trigger";
-  trigger: Trigger;
-  target: Target;
-  effect: Effect;
-  boosts: Effect[];
-  health: number;
-};
+  type: 'trigger'
+  trigger: Trigger
+  target: Target
+  effect: Effect
+  boosts: Effect[]
+  health: number
+}
 
-export type OwnedTriggerCard = TriggerCard & { ownerIdx: number };
-export type EffectfulCard = TriggerCard | {
-  type: "instant";
-  target: Target;
-  effect: Effect;
-};
-export type Card = EffectfulCard | {
-  type: "boost";
-  boost: Effect;
-  targetCardIdx: number;
-};
+export type OwnedTriggerCard = TriggerCard & { ownerIdx: number }
+export type EffectfulCard =
+  | TriggerCard
+  | {
+      type: 'instant'
+      target: Target
+      effect: Effect
+    }
+export type Card =
+  | EffectfulCard
+  | {
+      type: 'boost'
+      boost: Effect
+      targetCardIdx: number
+    }
 
-export type Powered = { power: number };
-export type Trigger = TriggerType & Powered;
-export type Target = TargetType & Powered;
-export type Effect = EffectType & Powered;
+export type Powered = { power: number }
+export type Trigger = { typeId: TriggerId } & Powered
+export type Target = { typeId: TargetId } & Powered
+export type Effect = { typeId: EffectId } & Powered
 
-export type Action = { use: number; discard: number; target?: number };
+export type Action = { use: number; discard: number; target?: number }
 
-export const simulate = (game: Game, action: Action) => {
-  game.events = [];
-  const triggered: EffectfulCard[] = [];
-  const currentPlayerIdx = game.turn % game.players.length;
-  const currentPlayer = game.players[currentPlayerIdx];
-  const usedCard = game.hands[currentPlayerIdx][action.use];
+export const simulate = (state: GameState, action: Action, currentPlayerIdx: number) => {
+  const newState: GameState = { players: state.players, cards: state.cards, hands: state.hands, turn: state.turn }
+  const events: Event[] = []
+  const triggered: EffectfulCard[] = []
+  const currentPlayer = newState.players[currentPlayerIdx]
+  const usedCard = newState.hands[currentPlayerIdx][action.use]
 
-  if (usedCard.type === "instant") triggered.push(usedCard);
-  if (usedCard.type === "boost") {
-    game.cards[usedCard.targetCardIdx].boosts.push(usedCard.boost);
+  if (usedCard.type === 'instant') triggered.push(usedCard)
+  if (usedCard.type === 'boost') {
+    newState.cards[usedCard.targetCardIdx].boosts.push(usedCard.boost)
   }
 
-  let triggeredIdx = 0;
+  let triggeredIdx = 0
   while (triggeredIdx < triggered.length) {
-    const card = triggered[triggeredIdx];
-    const targets = card.target.getTargets(game.players, currentPlayer);
-    card.effect.applyEffect(targets, card.effect.power);
+    const card = triggered[triggeredIdx]
+    const targets = TARGETS[card.target.typeId].getTargets(newState.players, currentPlayer)
+    EFFECTS[card.effect.typeId].applyEffect(targets, card.effect.power)
 
-    game.events.push({
-      effectId: card.effect.id,
-      targetIdxs: targets.map((t) => game.players.indexOf(t)),
-    });
+    events.push({
+      effect: card.effect,
+      targetIdxs: targets.map((t) => newState.players.indexOf(t)),
+    })
 
-    game.cards.forEach((c) => {
-      if (
-        !triggered.includes(c) && c.trigger.isTriggered(game, currentPlayer)
-      ) {
-        triggered.push(c);
+    newState.cards.forEach((c) => {
+      if (!triggered.includes(c) && TRIGGERS[c.trigger.typeId].isTriggered(newState, events, currentPlayer)) {
+        triggered.push(c)
       }
-    });
+    })
 
-    triggeredIdx++;
+    triggeredIdx++
   }
-};
+
+  newState.turn++
+
+  return { newState, events }
+}
